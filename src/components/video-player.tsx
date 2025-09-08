@@ -88,17 +88,17 @@ export function VideoPlayer({ video, isSubscribed, onUnlock }: VideoPlayerProps)
       
       <div className="absolute bottom-6 left-6 text-white text-shadow p-2 rounded-lg bg-black/30">
         <h2 className="text-xl font-bold">{video.title}</h2>
-        <p className="text-sm">by {video.uploader}</p>
+        <p className="text-sm">作者 {video.uploader}</p>
       </div>
 
       {isLocked && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60">
           <Lock className="h-16 w-16 text-white mb-4" />
-          <h3 className="text-2xl font-bold text-white mb-2">Premium Content</h3>
-          <p className="text-white/80 mb-6">Subscribe to unlock this exclusive video.</p>
+          <h3 className="text-2xl font-bold text-white mb-2">高级内容</h3>
+          <p className="text-white/80 mb-6">订阅以解锁此独家视频。</p>
           <Button onClick={(e) => { e.stopPropagation(); onUnlock(); }} className="bg-primary hover:bg-primary/90 text-primary-foreground">
             <Lock className="mr-2 h-4 w-4" />
-            Unlock Now
+            立即解锁
           </Button>
         </div>
       )}
@@ -111,7 +111,7 @@ export function VideoPlayer({ video, isSubscribed, onUnlock }: VideoPlayerProps)
             )}
         >
             <button
-                aria-label={isPlaying ? 'Pause' : 'Play'}
+                aria-label={isPlaying ? '暂停' : '播放'}
                 className="p-4 bg-black/40 rounded-full text-white"
                 onClick={(e) => {
                     e.stopPropagation();

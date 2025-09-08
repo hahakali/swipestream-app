@@ -31,14 +31,14 @@ const prompt = ai.definePrompt({
   name: 'subscriptionPrompt',
   input: {schema: SubscriptionPromptInputSchema},
   output: {schema: SubscriptionPromptOutputSchema},
-  prompt: `You are a helpful assistant designed to generate subscription prompts.
+  prompt: `你是一个乐于助人的助手，旨在生成订阅提示。
 
-  Generate a friendly and informative subscription prompt for a user who is trying to access premium content but is not subscribed.
-  The content name is: {{{contentName}}}.
-  The subscription benefits are: {{#each subscriptionBenefits}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}.
+  为试图访问高级内容但未订阅的用户生成一个友好且内容丰富的订阅提示。
+  内容名称是：{{{contentName}}}。
+  订阅权益是：{{#each subscriptionBenefits}}{{{this}}}{{#unless @last}}，{{/unless}}{{/each}}。
 
-  The prompt should clearly explain the benefits of subscribing and guide the user through the payment process. The prompt should be no more than 3 sentences long.
-  If the user IS subscribed, generate a prompt that indicates that they already have access to this content and can view it.
+  提示应清楚地解释订阅的好处，并引导用户完成支付过程。提示不得超过3句话。所有输出必须为中文。
+  如果用户已经订阅，请生成一个提示，表明他们已经可以访问此内容并可以查看。
   `,
 });
 

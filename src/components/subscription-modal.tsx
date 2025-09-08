@@ -25,10 +25,10 @@ interface SubscriptionModalProps {
 }
 
 const subscriptionBenefits = [
-  "Access to all premium videos",
-  "Exclusive content from top creators",
-  "Ad-free viewing experience",
-  "High-quality streaming",
+  "访问所有高级视频",
+  "顶尖创作者的独家内容",
+  "无广告观看体验",
+  "高清流媒体",
 ];
 
 export function SubscriptionModal({ video, isOpen, onClose, toggleSubscription, isSubscribed }: SubscriptionModalProps) {
@@ -49,7 +49,7 @@ export function SubscriptionModal({ video, isOpen, onClose, toggleSubscription, 
         })
         .catch((error) => {
           console.error("Error generating prompt:", error);
-          setPrompt("Subscribe to unlock exclusive content and enjoy all the benefits of a premium membership.");
+          setPrompt("订阅以解锁独家内容，享受高级会员的所有权益。");
         })
         .finally(() => {
           setIsLoading(false);
@@ -61,8 +61,8 @@ export function SubscriptionModal({ video, isOpen, onClose, toggleSubscription, 
     toggleSubscription();
     onClose();
     toast({
-      title: "🎉 Welcome to Premium!",
-      description: "You've successfully subscribed. Enjoy your exclusive content!",
+      title: "🎉 欢迎加入 Premium!",
+      description: "您已成功订阅。尽情享受您的专属内容吧！",
     });
   };
 
@@ -72,10 +72,10 @@ export function SubscriptionModal({ video, isOpen, onClose, toggleSubscription, 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-             Unlock Premium Content
+             解锁高级内容
           </DialogTitle>
           <DialogDescription>
-            Join SwipeStream Premium to watch this video and more.
+            加入 SwipeStream Premium 观看此视频及更多内容。
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
@@ -91,11 +91,11 @@ export function SubscriptionModal({ video, isOpen, onClose, toggleSubscription, 
         </div>
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onClose}>
-            Maybe Later
+            以后再说
           </Button>
           <Button onClick={handleSubscribe} className="bg-accent hover:bg-accent/90 text-accent-foreground">
             <Rocket className="mr-2 h-4 w-4" />
-            Subscribe Now
+            立即订阅
           </Button>
         </DialogFooter>
       </DialogContent>

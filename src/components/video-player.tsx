@@ -81,7 +81,6 @@ export function VideoPlayer({ video, isSubscribed, onUnlock }: VideoPlayerProps)
           isLocked && 'blur-md brightness-50'
         )}
         loop
-        muted
         playsInline
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}

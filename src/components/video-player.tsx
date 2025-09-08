@@ -86,7 +86,7 @@ export function VideoPlayer({ video, isSubscribed, onUnlock }: VideoPlayerProps)
         src={isLocked ? '' : video.src}
         poster={video.poster}
         className={cn(
-          'w-full h-full object-contain',
+          'w-full h-full object-cover',
           isLocked && 'blur-md brightness-50'
         )}
         loop

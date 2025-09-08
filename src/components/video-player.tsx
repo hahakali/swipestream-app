@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { Video } from '@/lib/data';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, Volume2, VolumeX, Lock, Info } from 'lucide-react';
+import { Play, Pause, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface VideoPlayerProps {
@@ -16,7 +16,6 @@ export function VideoPlayer({ video, isSubscribed, onUnlock }: VideoPlayerProps)
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
   const [showControls, setShowControls] = useState(false);
 
   const isLocked = video.isPremium && !isSubscribed;
@@ -34,14 +33,6 @@ export function VideoPlayer({ video, isSubscribed, onUnlock }: VideoPlayerProps)
       }
     }
   }, [isLocked]);
-  
-  const toggleMute = () => {
-    const videoElement = videoRef.current;
-    if (videoElement) {
-      videoElement.muted = !videoElement.muted;
-      setIsMuted(videoElement.muted);
-    }
-  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -90,7 +81,7 @@ export function VideoPlayer({ video, isSubscribed, onUnlock }: VideoPlayerProps)
           isLocked && 'blur-md brightness-50'
         )}
         loop
-        muted={isMuted}
+        muted
         playsInline
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
@@ -132,18 +123,6 @@ export function VideoPlayer({ video, isSubscribed, onUnlock }: VideoPlayerProps)
             </button>
         </div>
       )}
-
-      <div className={cn("absolute top-6 right-6 transition-opacity duration-300", showControls ? 'opacity-100' : 'opacity-0')}>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-white bg-black/40 hover:bg-white/20 hover:text-white"
-            onClick={(e) => { e.stopPropagation(); toggleMute(); }}
-          >
-            {isMuted ? <VolumeX /> : <Volume2 />}
-            <span className="sr-only">Toggle Mute</span>
-          </Button>
-      </div>
     </section>
   );
 }

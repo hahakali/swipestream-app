@@ -20,7 +20,7 @@ export default function VideoFeed() {
 
   return (
     <>
-      <main className="h-full w-full snap-y snap-mandatory overflow-y-scroll">
+      <main className="h-full w-full snap-y snap-mandatory overflow-y-auto">
         {videos.map((video) => (
           <VideoPlayer
             key={video.id}

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import type { Video } from '@/lib/data';
 import { generateSubscriptionPrompt } from '@/ai/flows/subscription-prompt-generation';
-import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -21,6 +20,8 @@ interface SubscriptionModalProps {
   video: Video | null;
   isOpen: boolean;
   onClose: () => void;
+  toggleSubscription: () => void;
+  isSubscribed?: boolean;
 }
 
 const subscriptionBenefits = [
@@ -30,8 +31,7 @@ const subscriptionBenefits = [
   "High-quality streaming",
 ];
 
-export function SubscriptionModal({ video, isOpen, onClose }: SubscriptionModalProps) {
-  const { isSubscribed, toggleSubscription } = useAuth();
+export function SubscriptionModal({ video, isOpen, onClose, toggleSubscription, isSubscribed }: SubscriptionModalProps) {
   const { toast } = useToast();
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +40,7 @@ export function SubscriptionModal({ video, isOpen, onClose }: SubscriptionModalP
     if (isOpen && video) {
       setIsLoading(true);
       generateSubscriptionPrompt({
-        isSubscribed,
+        isSubscribed: !!isSubscribed,
         contentName: video.title,
         subscriptionBenefits,
       })

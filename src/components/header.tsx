@@ -1,69 +1,104 @@
 "use client";
 
-import Link from 'next/link';
-import { Film, LogIn, LogOut, Crown } from 'lucide-react';
-import { useAuth } from '@/contexts/auth-context';
+import { useState, useEffect } from 'react';
+import type { Video } from '@/lib/data';
+import { generateSubscriptionPrompt } from '@/ai/flows/subscription-prompt-generation';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Rocket, Sparkles } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
+interface SubscriptionModalProps {
+  video: Video | null;
+  isOpen: boolean;
+  onClose: () => void;
+  toggleSubscription: () => void;
+  isSubscribed?: boolean;
+}
 
-export function Header() {
-  const { isLoggedIn, isSubscribed, logout, toggleSubscription } = useAuth();
+const subscriptionBenefits = [
+  "Access to all premium videos",
+  "Exclusive content from top creators",
+  "Ad-free viewing experience",
+  "High-quality streaming",
+];
+
+export function SubscriptionModal({ video, isOpen, onClose, toggleSubscription, isSubscribed }: SubscriptionModalProps) {
+  const { toast } = useToast();
+  const [prompt, setPrompt] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && video) {
+      setIsLoading(true);
+      generateSubscriptionPrompt({
+        isSubscribed: !!isSubscribed,
+        contentName: video.title,
+        subscriptionBenefits,
+      })
+        .then((response) => {
+          setPrompt(response.prompt);
+        })
+        .catch((error) => {
+          console.error("Error generating prompt:", error);
+          setPrompt("Subscribe to unlock exclusive content and enjoy all the benefits of a premium membership.");
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [isOpen, video, isSubscribed]);
+
+  const handleSubscribe = () => {
+    toggleSubscription();
+    onClose();
+    toast({
+      title: "🎉 Welcome to Premium!",
+      description: "You've successfully subscribed. Enjoy your exclusive content!",
+    });
+  };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-10 p-4 bg-gradient-to-b from-black/50 to-transparent">
-      <div className="container mx-auto flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-white">
-          <Film className="h-8 w-8 text-primary" />
-          <h1 className="text-2xl font-bold">SwipeStream</h1>
-        </Link>
-        <div className="flex items-center gap-4">
-           {isLoggedIn && (
-             <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                   <div className="flex items-center space-x-2">
-                    <Crown className={`h-5 w-5 ${isSubscribed ? 'text-yellow-400' : 'text-gray-500'}`} />
-                    <Switch
-                      id="subscription-mode"
-                      checked={isSubscribed}
-                      onCheckedChange={toggleSubscription}
-                      aria-label="Toggle premium subscription"
-                    />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Toggle Premium Subscription (Dev)</p>
-                </TooltipContent>
-              </Tooltip>
-             </TooltipProvider>
-          )}
-
-          <Separator orientation="vertical" className="h-8 bg-gray-600" />
-          
-          {isLoggedIn ? (
-            <Button variant="ghost" size="icon" onClick={logout} className="text-white hover:bg-white/10 hover:text-white">
-              <LogOut className="h-6 w-6" />
-              <span className="sr-only">Log Out</span>
-            </Button>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[425px] bg-card border-border">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+             Unlock Premium Content
+          </DialogTitle>
+          <DialogDescription>
+            Join SwipeStream Premium to watch this video and more.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="py-4">
+          {isLoading ? (
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+            </div>
           ) : (
-            <Button asChild variant="default" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-              <Link href="/login">
-                <LogIn className="mr-2 h-5 w-5" />
-                Login
-              </Link>
-            </Button>
+            <p className="text-sm text-foreground/80">{prompt}</p>
           )}
         </div>
-      </div>
-    </header>
+        <DialogFooter>
+          <Button type="button" variant="outline" onClick={onClose}>
+            Maybe Later
+          </Button>
+          <Button onClick={handleSubscribe} className="bg-accent hover:bg-accent/90 text-accent-foreground">
+            <Rocket className="mr-2 h-4 w-4" />
+            Subscribe Now
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

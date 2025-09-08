@@ -3,21 +3,24 @@
 import { useState } from 'react';
 import { videos } from '@/lib/data';
 import type { Video } from '@/lib/data';
-import { useAuth } from '@/contexts/auth-context';
 import { VideoPlayer } from './video-player';
 import { SubscriptionModal } from './subscription-modal';
 
 export default function VideoFeed() {
-  const { isSubscribed } = useAuth();
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const [modalVideo, setModalVideo] = useState<Video | null>(null);
 
   const openSubscriptionModal = (video: Video) => {
     setModalVideo(video);
   };
+  
+  const handleToggleSubscription = () => {
+    setIsSubscribed(prev => !prev);
+  };
 
   return (
     <>
-      <main className="h-full w-full snap-y snap-mandatory overflow-y-scroll scrollbar-hide">
+      <main className="h-full w-full snap-y snap-mandatory overflow-y-scroll">
         {videos.map((video) => (
           <VideoPlayer
             key={video.id}
@@ -31,6 +34,7 @@ export default function VideoFeed() {
         video={modalVideo}
         isOpen={!!modalVideo}
         onClose={() => setModalVideo(null)}
+        toggleSubscription={handleToggleSubscription}
       />
     </>
   );
